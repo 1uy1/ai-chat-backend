@@ -6,15 +6,15 @@
 - [x] 新建独立项目目录 `ai-chat-backend`
 - [x] 写最简 README（项目名 + 一句话目标）
 - [x] `.env` + `.gitignore`（密钥不入库）
-- [ ] git init + 关联 GitHub 远程（public）
-- [ ] 第一个 commit：`init project`
-- [ ] 准备好大模型 API Key，填进 `.env`
+- [x] git init + 关联 GitHub 远程（public）
+- [x] 第一个 commit：`init project`
+- [x] 准备好大模型 API Key，填进 `.env`
 
 ## 阶段 1：最小链路（第 1 周）
 - [x] 装好 fastapi / uvicorn / openai
 - [x] `/chat` POST 接口：接收 message → 调大模型 → 返回回复
-- [ ] 在 `/docs` 里调通 `/chat`
-- [ ] commit: `feat: basic /chat endpoint`
+- [x] 在 `/docs` 里调通 `/chat`
+- [x] commit: `feat: basic /chat endpoint`
 - [ ] 搞懂 async/await，把 `/chat` 改成异步
 - [ ] commit: `refactor: async LLM call`
 - [ ] 多轮对话（接收历史消息列表）
