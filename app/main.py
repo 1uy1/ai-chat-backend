@@ -1,6 +1,6 @@
 """AI Chat Backend —— 第一条链路：接收提问 → 调大模型 → 返回回复。"""
 from fastapi import FastAPI, HTTPException
-from openai import OpenAI
+from openai import AsyncOpenAI
 from pydantic import BaseModel
 
 from app.config import settings
@@ -8,16 +8,19 @@ from app.config import settings
 app = FastAPI(title="AI Chat Backend", version="0.1.0")
 
 # OpenAI 兼容客户端，base_url 指向 DeepSeek（或任意兼容服务）
-client = OpenAI(api_key=settings.api_key, base_url=settings.base_url)
+client = AsyncOpenAI(api_key=settings.api_key, base_url=settings.base_url)
+
+
+class Message(BaseModel):
+    role: str
+    content: str
 
 
 class ChatRequest(BaseModel):
-    message: str
-
+    messages: list[Message]
 
 class ChatResponse(BaseModel):
     reply: str
-
 
 @app.get("/")
 def health():
@@ -26,12 +29,12 @@ def health():
 
 
 @app.post("/chat", response_model=ChatResponse)
-def chat(req: ChatRequest):
-    """最简单的单轮对话：一句话进，一句话出。"""
+async def chat(req: ChatRequest):
+    """多轮对话：接收历史消息列表，整个发给大模型。"""
     try:
-        resp = client.chat.completions.create(
+        resp = await client.chat.completions.create(
             model=settings.model,
-            messages=[{"role": "user", "content": req.message}],
+            messages=[m.model_dump() for m in req.messages],
         )
     except Exception as e:
         # Key 失效、超时、网络问题等都在这里兜住，返回友好报错
